@@ -46,7 +46,8 @@ const { IoAdapter } =
   optional('@nestjs/websockets/adapters/io-adapter') || ({} as any);
 
 export class NestApplication extends NestApplicationContext
-  implements INestApplication,
+  implements
+    INestApplication,
     INestExpressApplication,
     INestFastifyApplication {
   private readonly logger = new Logger(NestApplication.name, true);
@@ -119,7 +120,7 @@ export class NestApplication extends NestApplicationContext
     return this.httpAdapter;
   }
 
-  public getUnderlyingHttpServer(): any {
+  public getUnderlyingHttpServer() {
     return this.isExpress()
       ? this.httpServer
       : this.httpAdapter.getHttpServer();
@@ -140,7 +141,7 @@ export class NestApplication extends NestApplicationContext
     );
   }
 
-  public async init(): Promise<this> {
+  public async init() {
     const useBodyParser =
       this.appOptions && this.appOptions.bodyParser !== false;
     useBodyParser && this.registerParserMiddleware();
@@ -226,7 +227,7 @@ export class NestApplication extends NestApplicationContext
     return this.httpServer;
   }
 
-  public startAllMicroservices(callback?: () => void): this {
+  public startAllMicroservices(callback?: () => void) {
     Promise.all(this.microservices.map(this.listenToPromise)).then(
       () => callback && callback(),
     );
@@ -237,12 +238,12 @@ export class NestApplication extends NestApplicationContext
     return new Promise(resolve => this.startAllMicroservices(resolve));
   }
 
-  public use(...args: any[]): this {
+  public use(...args: any[]) {
     (this.httpAdapter as any).use(...args);
     return this;
   }
 
-  public engine(...args): this {
+  public engine(...args) {
     if (!this.isExpress()) {
       return this;
     }
@@ -250,7 +251,7 @@ export class NestApplication extends NestApplicationContext
     return this;
   }
 
-  public set(...args): this {
+  public set(...args) {
     if (!this.isExpress()) {
       return this;
     }
@@ -258,7 +259,7 @@ export class NestApplication extends NestApplicationContext
     return this;
   }
 
-  public disable(...args): this {
+  public disable(...args) {
     if (!this.isExpress()) {
       return this;
     }
@@ -266,7 +267,7 @@ export class NestApplication extends NestApplicationContext
     return this;
   }
 
-  public enable(...args): this {
+  public enable(...args) {
     if (!this.isExpress()) {
       return this;
     }
@@ -274,7 +275,7 @@ export class NestApplication extends NestApplicationContext
     return this;
   }
 
-  public register(...args): this {
+  public register(...args) {
     const adapter = this.httpAdapter as FastifyAdapter;
     adapter.register && adapter.register(...args);
     return this;
@@ -285,7 +286,7 @@ export class NestApplication extends NestApplicationContext
     return adapter.inject && adapter.inject(...args);
   }
 
-  public enableCors(options?: CorsOptions): this {
+  public enableCors(options?: CorsOptions) {
     this.httpAdapter.use(cors(options));
     return this;
   }
@@ -309,7 +310,7 @@ export class NestApplication extends NestApplicationContext
     });
   }
 
-  public async close(): Promise<any> {
+  public async close() {
     this.socketModule && (await this.socketModule.close());
     this.httpServer && this.httpServer.close();
 
@@ -322,53 +323,50 @@ export class NestApplication extends NestApplicationContext
     await super.close();
   }
 
-  public setGlobalPrefix(prefix: string): this {
+  public setGlobalPrefix(prefix: string) {
     this.config.setGlobalPrefix(prefix);
     return this;
   }
 
-  public useWebSocketAdapter(adapter: WebSocketAdapter): this {
+  public useWebSocketAdapter(adapter: WebSocketAdapter) {
     this.config.setIoAdapter(adapter);
     return this;
   }
 
-  public useGlobalFilters(...filters: ExceptionFilter[]): this {
+  public useGlobalFilters(...filters: ExceptionFilter[]) {
     this.config.useGlobalFilters(...filters);
     return this;
   }
 
-  public useGlobalPipes(...pipes: PipeTransform<any>[]): this {
+  public useGlobalPipes(...pipes: PipeTransform<any>[]) {
     this.config.useGlobalPipes(...pipes);
     return this;
   }
 
-  public useGlobalInterceptors(...interceptors: NestInterceptor[]): this {
+  public useGlobalInterceptors(...interceptors: NestInterceptor[]) {
     this.config.useGlobalInterceptors(...interceptors);
     return this;
   }
 
-  public useGlobalGuards(...guards: CanActivate[]): this {
+  public useGlobalGuards(...guards: CanActivate[]) {
     this.config.useGlobalGuards(...guards);
     return this;
   }
 
-  public useStaticAssets(options: any): this;
+  public useStaticAssets(options: any);
   public useStaticAssets(path: string, options?: ServeStaticOptions);
-  public useStaticAssets(
-    pathOrOptions: any,
-    options?: ServeStaticOptions,
-  ): this {
+  public useStaticAssets(pathOrOptions: any, options?: ServeStaticOptions) {
     this.httpAdapter.useStaticAssets &&
       this.httpAdapter.useStaticAssets(pathOrOptions, options);
     return this;
   }
 
-  public setBaseViewsDir(path: string): this {
+  public setBaseViewsDir(path: string) {
     this.httpAdapter.setBaseViewsDir && this.httpAdapter.setBaseViewsDir(path);
     return this;
   }
 
-  public setViewEngine(engineOrOptions: any): this {
+  public setViewEngine(engineOrOptions: any) {
     this.httpAdapter.setViewEngine &&
       this.httpAdapter.setViewEngine(engineOrOptions);
     return this;
